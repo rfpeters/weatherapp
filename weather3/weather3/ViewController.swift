@@ -95,6 +95,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
             if let httpStatus = response as? NSHTTPURLResponse where httpStatus.statusCode != 200 {
                 self.errorLabel.backgroundColor = UIColor.redColor()
                 self.errorLabel.text = "Unable to get data from server"
+                return
             }
             
             do {

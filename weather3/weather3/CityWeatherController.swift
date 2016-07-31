@@ -51,8 +51,18 @@ class CityWeatherController: UIViewController, UITextFieldDelegate{
     }
     
     @IBAction func buttonPressed(sender: UIButton){
+        self.errorLabel.backgroundColor = UIColor.clearColor()
+        self.errorLabel.text = ""
+        
         self.city = self.cityText.text
         self.state = self.stateText.text
+        
+        self.tempLabel.text = ""
+        self.lowTempLabel.text = ""
+        self.highTempLabel.text = ""
+        self.descLabel.text = ""
+        self.humidityLabel.text = ""
+        self.windLabel.text = ""
         if self.city.isEmpty{
             self.errorLabel.backgroundColor = UIColor.redColor()
             self.errorLabel.text = "A city needs to be provided"
@@ -64,6 +74,7 @@ class CityWeatherController: UIViewController, UITextFieldDelegate{
         else{
             self.getWeather()
         }
+        view.endEditing(true)
     }
     
     @IBAction func backgroundTapped(sender: AnyObject){
@@ -101,35 +112,50 @@ class CityWeatherController: UIViewController, UITextFieldDelegate{
                     
                     if let code = json["cod"] as? Int{
                         if code == 200 {
-                            //get weather description
-                            let weather = json["weather"] as? [[String: AnyObject]]
-                            self.desc = weather![0]["description"] as! String
-                            self.descLabel.text = self.desc
                             
-                            //get temp
-                            let main = json["main"] as? [String: AnyObject]
-                            self.tempF = main!["temp"] as! Int
-                            self.tempC = self.convertFToC(self.tempF)
-                            self.lowTempF = main!["temp_min"] as! Int
-                            self.lowTempC = self.convertFToC(self.lowTempF)
-                            self.highTempF = main!["temp_max"] as! Int
-                            self.highTempC = self.convertFToC(self.highTempF)
-                            self.displayTemp()
-                            
-                            //get humidity
-                            self.humidity = main!["humidity"] as! Int
-                            self.humidityLabel.text = String(self.humidity)
-                            
-                            //get wind speed
-                            let wind = json["wind"] as? [String: AnyObject]
-                            self.windSpeed = wind!["speed"] as! Double
-                            self.windLabel.text = String(self.windSpeed)
-                            self.tempType.enabled = true
+                            let sys = json["sys"] as? [String: AnyObject]
+                            let country = sys!["country"] as! String
+                            if country == "US"{
+                                //get weather description
+                                let weather = json["weather"] as? [[String: AnyObject]]
+                                self.desc = weather![0]["description"] as! String
+                                self.descLabel.text = self.desc
+                                
+                                //get temp
+                                let main = json["main"] as? [String: AnyObject]
+                                self.tempF = main!["temp"] as! Int
+                                self.tempC = self.convertFToC(self.tempF)
+                                self.lowTempF = main!["temp_min"] as! Int
+                                self.lowTempC = self.convertFToC(self.lowTempF)
+                                self.highTempF = main!["temp_max"] as! Int
+                                self.highTempC = self.convertFToC(self.highTempF)
+                                self.displayTemp()
+                                
+                                //get humidity
+                                self.humidity = main!["humidity"] as! Int
+                                self.humidityLabel.text = String(self.humidity)
+                                
+                                //get wind speed
+                                let wind = json["wind"] as? [String: AnyObject]
+                                self.windSpeed = wind!["speed"] as! Double
+                                self.windLabel.text = String(self.windSpeed)
+                                self.tempType.enabled = true
                             }
+                            else{
+                                self.errorLabel.backgroundColor = UIColor.redColor()
+                                self.errorLabel.text = "City is not in the US"
+                            }
+                            
+                        }
                         else {
                             self.errorLabel.backgroundColor = UIColor.redColor()
                             self.errorLabel.text = "Unable to find city"
                         }
+                    }
+                    else{
+                        self.errorLabel.backgroundColor = UIColor.redColor()
+                        self.errorLabel.text = "Unable to find city"
+
                     }
                     
                 }

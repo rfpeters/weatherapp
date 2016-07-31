@@ -28,9 +28,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Need location</string>
+	<string>Application needs current location to get weather</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need location</string>
+	<string>Application needs current location to get weather</string>
 	<key>UILaunchStoryboardName</key>
 	<string>Main</string>
 	<key>UIMainStoryboardFile</key>
